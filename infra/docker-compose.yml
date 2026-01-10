@@ -1,0 +1,171 @@
+services:
+  # PostgreSQL 16 - Primary Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: catalyst-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-catalyst}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-catalyst_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-catalyst_db}
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - catalyst-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-catalyst} -d ${POSTGRES_DB:-catalyst_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis - Caching Layer
+  redis:
+    image: redis:7-alpine
+    container_name: catalyst-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory ${REDIS_MAX_MEMORY:-256mb}
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD:-catalyst_redis_password}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - catalyst-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  # Apache Kafka - Message Queue (KRaft mode, no Zookeeper needed)
+  kafka:
+    image: apache/kafka:latest
+    container_name: catalyst-kafka
+    restart: unless-stopped
+    environment:
+      # KRaft settings (no Zookeeper)
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      
+      # Listeners
+      KAFKA_LISTENERS: 'PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      
+      # Cluster settings
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      
+      # Topic settings
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      
+      # Log settings
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+    ports:
+      - "${KAFKA_PORT:-9094}:9094"
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - catalyst-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 45s
+
+  # Kafka UI - Optional management interface
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: catalyst-kafka-ui
+    restart: unless-stopped
+    environment:
+      KAFKA_CLUSTERS_0_NAME: catalyst-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    ports:
+      - "${KAFKA_UI_PORT:-8080}:8080"
+    networks:
+      - catalyst-network
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  # LocalStack - AWS Services Simulation (S3 focus)
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: catalyst-localstack
+    restart: unless-stopped
+    environment:
+      SERVICES: s3
+      DEBUG: ${LOCALSTACK_DEBUG:-0}
+      DOCKER_HOST: unix:///var/run/docker.sock
+      AWS_DEFAULT_REGION: ${AWS_REGION:-us-east-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-test}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-test}
+      EDGE_PORT: 4566
+    ports:
+      - "${LOCALSTACK_PORT:-4566}:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - ./localstack/init:/docker-entrypoint-initaws.d:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - catalyst-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # Mailpit - Email Testing Tool
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: catalyst-mailpit
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_DASHBOARD_PORT:-8025}:8025"
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+    networks:
+      - catalyst-network
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tuln | grep 8025 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  catalyst-network:
+    name: catalyst-network
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: catalyst-postgres-data
+  redis_data:
+    name: catalyst-redis-data
+  kafka_data:
+    name: catalyst-kafka-data
+  localstack_data:
+    name: catalyst-localstack-data
+
