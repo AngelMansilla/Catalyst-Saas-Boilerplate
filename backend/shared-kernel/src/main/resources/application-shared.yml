@@ -1,0 +1,63 @@
+# Shared Kernel Default Configuration
+# Services should import this configuration
+
+# Catalyst Security Configuration
+catalyst:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:change-this-in-production-256-bit-secret}
+      access-token-expiration: 15m
+      refresh-token-expiration: 7d
+      issuer: catalyst-api
+      audience: catalyst-client
+      refresh-token-length: 32
+    
+    cors:
+      allowed-origins:
+        - http://localhost:3000
+        - http://localhost:5173
+      allowed-methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - PATCH
+        - OPTIONS
+      allowed-headers:
+        - Authorization
+        - Content-Type
+        - X-Requested-With
+        - Accept
+        - Origin
+      exposed-headers:
+        - X-RateLimit-Limit
+        - X-RateLimit-Remaining
+        - X-RateLimit-Reset
+      allow-credentials: true
+      max-age: 3600
+    
+    rate-limit:
+      enabled: true
+      fallback-to-memory: true
+      bucket-ttl: 1h
+      anonymous:
+        requests-per-minute: 30
+        burst: 10
+        window: 1m
+      authenticated:
+        requests-per-minute: 100
+        burst: 20
+        window: 1m
+      premium:
+        requests-per-minute: 500
+        burst: 50
+        window: 1m
+    
+    crypto:
+      encryption-key: ${ENCRYPTION_KEY:32-char-dev-key-change-in-prod!!}
+      bcrypt-strength: 12
+      salt-length: 16
+
+  error:
+    include-stacktrace: false
+
