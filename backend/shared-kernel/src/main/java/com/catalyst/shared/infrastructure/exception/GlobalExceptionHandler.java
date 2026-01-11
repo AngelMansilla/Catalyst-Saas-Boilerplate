@@ -6,7 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import com.catalyst.shared.infrastructure.config.ErrorProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,16 @@ import java.util.stream.Collectors;
  * Global exception handler that converts exceptions to standardized API responses.
  */
 @RestControllerAdvice
+@EnableConfigurationProperties(ErrorProperties.class)
 public class GlobalExceptionHandler {
     
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     
-    @Value("${catalyst.error.include-stacktrace:false}")
-    private boolean includeStackTrace;
+    private final ErrorProperties errorProperties;
+    
+    public GlobalExceptionHandler(ErrorProperties errorProperties) {
+        this.errorProperties = errorProperties;
+    }
     
     // ==================== Domain Exceptions ====================
     
@@ -223,7 +228,7 @@ public class GlobalExceptionHandler {
             .timestamp(Instant.now())
             .addDetail("correlationId", correlationId);
         
-        if (includeStackTrace) {
+        if (errorProperties.isIncludeStacktrace()) {
             builder.addDetail("exception", ex.getClass().getName());
             builder.addDetail("exceptionMessage", ex.getMessage());
         }
