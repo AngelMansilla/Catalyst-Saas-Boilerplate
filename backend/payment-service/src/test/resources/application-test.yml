@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:16-alpine:///payment_test
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: false  # Use Hibernate DDL for tests
+
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers:localhost:9092}
+    consumer:
+      auto-offset-reset: earliest
+
+stripe:
+  api-key: sk_test_mock_key
+  webhook-secret: whsec_mock_secret
+
+payment:
+  trial:
+    duration-days: 7
+    expiration-cron: "-"  # Disable scheduled task in tests
+
+logging:
+  level:
+    com.catalyst.payment: DEBUG
+    org.hibernate.SQL: DEBUG
+
