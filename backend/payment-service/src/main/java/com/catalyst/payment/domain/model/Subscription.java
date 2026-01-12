@@ -227,56 +227,56 @@ public class Subscription {
         return LocalDateTime.now().plusMonths(cycle.getMonths());
     }
 
-    // Package-private setters for JPA/persistence layer
-    void setId(UUID id) {
+    // Setters for persistence layer (reconstitution)
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    void setCustomerId(UUID customerId) {
+    public void setCustomerId(UUID customerId) {
         this.customerId = customerId;
     }
 
-    void setStripeSubscriptionId(StripeSubscriptionId stripeSubscriptionId) {
+    public void setStripeSubscriptionId(StripeSubscriptionId stripeSubscriptionId) {
         this.stripeSubscriptionId = stripeSubscriptionId;
     }
 
-    void setStatus(SubscriptionStatus status) {
+    public void setStatus(SubscriptionStatus status) {
         this.status = status;
     }
 
-    void setTier(SubscriptionTier tier) {
+    public void setTier(SubscriptionTier tier) {
         this.tier = tier;
     }
 
-    void setBillingCycle(BillingCycle billingCycle) {
+    public void setBillingCycle(BillingCycle billingCycle) {
         this.billingCycle = billingCycle;
     }
 
-    void setTrialEndDate(LocalDateTime trialEndDate) {
+    public void setTrialEndDate(LocalDateTime trialEndDate) {
         this.trialEndDate = trialEndDate;
     }
 
-    void setCurrentPeriodStart(LocalDateTime currentPeriodStart) {
+    public void setCurrentPeriodStart(LocalDateTime currentPeriodStart) {
         this.currentPeriodStart = currentPeriodStart;
     }
 
-    void setCurrentPeriodEnd(LocalDateTime currentPeriodEnd) {
+    public void setCurrentPeriodEnd(LocalDateTime currentPeriodEnd) {
         this.currentPeriodEnd = currentPeriodEnd;
     }
 
-    void setCanceledAt(LocalDateTime canceledAt) {
+    public void setCanceledAt(LocalDateTime canceledAt) {
         this.canceledAt = canceledAt;
     }
 
-    void setCancellationReason(CancellationReason cancellationReason) {
+    public void setCancellationReason(CancellationReason cancellationReason) {
         this.cancellationReason = cancellationReason;
     }
 
-    void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

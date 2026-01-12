@@ -63,6 +63,29 @@ public class Payment {
     }
 
     /**
+     * Factory method for reconstituting from persistence.
+     *
+     * @param invoiceId the invoice ID
+     * @param amount the payment amount
+     * @return a new payment instance for hydration
+     */
+    public static Payment create(UUID invoiceId, Money amount) {
+        if (invoiceId == null) {
+            throw new IllegalArgumentException("Invoice ID cannot be null");
+        }
+        if (amount == null) {
+            throw new IllegalArgumentException("Amount cannot be null");
+        }
+
+        Payment payment = new Payment();
+        payment.invoiceId = invoiceId;
+        payment.amount = amount;
+        payment.status = PaymentStatus.PENDING;
+        
+        return payment;
+    }
+
+    /**
      * Marks the payment as processing.
      */
     public void markAsProcessing() {
@@ -125,40 +148,40 @@ public class Payment {
         return this.status == PaymentStatus.PENDING || this.status == PaymentStatus.PROCESSING;
     }
 
-    // Package-private setters for persistence layer
-    void setId(UUID id) {
+    // Setters for persistence layer (reconstitution)
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    void setInvoiceId(UUID invoiceId) {
+    public void setInvoiceId(UUID invoiceId) {
         this.invoiceId = invoiceId;
     }
 
-    void setStripePaymentIntentId(StripePaymentIntentId stripePaymentIntentId) {
+    public void setStripePaymentIntentId(StripePaymentIntentId stripePaymentIntentId) {
         this.stripePaymentIntentId = stripePaymentIntentId;
     }
 
-    void setStatus(PaymentStatus status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 
-    void setAmount(Money amount) {
+    public void setAmount(Money amount) {
         this.amount = amount;
     }
 
-    void setPaymentMethodType(String paymentMethodType) {
+    public void setPaymentMethodType(String paymentMethodType) {
         this.paymentMethodType = paymentMethodType;
     }
 
-    void setFailureReason(String failureReason) {
+    public void setFailureReason(String failureReason) {
         this.failureReason = failureReason;
     }
 
-    void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

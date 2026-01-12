@@ -83,32 +83,32 @@ public class Customer {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Package-private setters for persistence layer
-    void setId(UUID id) {
+    // Setters for persistence layer (reconstitution)
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    void setUserId(UUID userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
-    void setStripeCustomerId(StripeCustomerId stripeCustomerId) {
+    public void setStripeCustomerId(StripeCustomerId stripeCustomerId) {
         this.stripeCustomerId = stripeCustomerId;
     }
 
-    void setEmail(Email email) {
+    public void setEmail(Email email) {
         this.email = email;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

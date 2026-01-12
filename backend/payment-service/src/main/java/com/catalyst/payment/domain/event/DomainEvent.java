@@ -35,5 +35,14 @@ public interface DomainEvent {
      * @return the aggregate ID
      */
     UUID getAggregateId();
+
+    /**
+     * Gets the event version.
+     *
+     * @return the version string
+     */
+    default String getVersion() {
+        return "1.0";
+    }
 }
 

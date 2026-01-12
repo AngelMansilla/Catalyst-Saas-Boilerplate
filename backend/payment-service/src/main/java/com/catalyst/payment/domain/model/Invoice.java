@@ -67,6 +67,30 @@ public class Invoice {
     }
 
     /**
+     * Factory method for reconstituting from persistence.
+     *
+     * @param subscriptionId the subscription ID
+     * @param amountDue the amount due
+     * @return a new invoice instance for hydration
+     */
+    public static Invoice create(UUID subscriptionId, Money amountDue) {
+        if (subscriptionId == null) {
+            throw new IllegalArgumentException("Subscription ID cannot be null");
+        }
+        if (amountDue == null) {
+            throw new IllegalArgumentException("Amount due cannot be null");
+        }
+
+        Invoice invoice = new Invoice();
+        invoice.subscriptionId = subscriptionId;
+        invoice.status = InvoiceStatus.DRAFT;
+        invoice.amountDue = amountDue;
+        invoice.amountPaid = Money.zero(amountDue.getCurrency());
+        
+        return invoice;
+    }
+
+    /**
      * Marks the invoice as paid.
      *
      * @param amountPaid the amount paid
@@ -134,52 +158,52 @@ public class Invoice {
             && LocalDateTime.now().isAfter(this.dueDate);
     }
 
-    // Package-private setters for persistence layer
-    void setId(UUID id) {
+    // Setters for persistence layer (reconstitution)
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    void setSubscriptionId(UUID subscriptionId) {
+    public void setSubscriptionId(UUID subscriptionId) {
         this.subscriptionId = subscriptionId;
     }
 
-    void setStripeInvoiceId(StripeInvoiceId stripeInvoiceId) {
+    public void setStripeInvoiceId(StripeInvoiceId stripeInvoiceId) {
         this.stripeInvoiceId = stripeInvoiceId;
     }
 
-    void setStatus(InvoiceStatus status) {
+    public void setStatus(InvoiceStatus status) {
         this.status = status;
     }
 
-    void setAmountDue(Money amountDue) {
+    public void setAmountDue(Money amountDue) {
         this.amountDue = amountDue;
     }
 
-    void setAmountPaid(Money amountPaid) {
+    public void setAmountPaid(Money amountPaid) {
         this.amountPaid = amountPaid;
     }
 
-    void setInvoicePdfUrl(String invoicePdfUrl) {
+    public void setInvoicePdfUrl(String invoicePdfUrl) {
         this.invoicePdfUrl = invoicePdfUrl;
     }
 
-    void setHostedInvoiceUrl(String hostedInvoiceUrl) {
+    public void setHostedInvoiceUrl(String hostedInvoiceUrl) {
         this.hostedInvoiceUrl = hostedInvoiceUrl;
     }
 
-    void setDueDate(LocalDateTime dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 
-    void setPaidAt(LocalDateTime paidAt) {
+    public void setPaidAt(LocalDateTime paidAt) {
         this.paidAt = paidAt;
     }
 
-    void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }
