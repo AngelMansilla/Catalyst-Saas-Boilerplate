@@ -46,5 +46,21 @@ public class PaymentSucceeded implements DomainEvent {
             .stripePaymentIntentId(stripePaymentIntentId)
             .build();
     }
+
+    /**
+     * Factory method for webhook processing (subscription-level event).
+     */
+    public static PaymentSucceeded of(UUID subscriptionId, UUID userId, 
+                                     BigDecimal amount, String currency, String stripeInvoiceId) {
+        return PaymentSucceeded.builder()
+            .eventId(UUID.randomUUID())
+            .timestamp(Instant.now())
+            .paymentId(UUID.randomUUID())
+            .subscriptionId(subscriptionId)
+            .amount(amount)
+            .currency(currency)
+            .stripePaymentIntentId(stripeInvoiceId)
+            .build();
+    }
 }
 

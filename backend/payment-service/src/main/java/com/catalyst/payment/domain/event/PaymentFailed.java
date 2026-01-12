@@ -44,5 +44,19 @@ public class PaymentFailed implements DomainEvent {
             .nextRetryDate(nextRetryDate)
             .build();
     }
+
+    /**
+     * Factory method for webhook processing (simplified).
+     */
+    public static PaymentFailed of(UUID subscriptionId, UUID userId, 
+                                  String failureReason, String stripeInvoiceId) {
+        return PaymentFailed.builder()
+            .eventId(UUID.randomUUID())
+            .timestamp(Instant.now())
+            .subscriptionId(subscriptionId)
+            .attemptNumber(1)
+            .failureReason(failureReason)
+            .build();
+    }
 }
 

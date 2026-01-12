@@ -38,6 +38,7 @@ public class PaymentApplicationService implements
     private final WebhookEventRepository webhookEventRepository;
     private final StripeGateway stripeGateway;
     private final EventPublisher eventPublisher;
+    private final WebhookEventHandler webhookEventHandler;
     private final int trialDurationDays;
 
     // ==================== CreateSubscriptionUseCase ====================
@@ -264,29 +265,23 @@ public class PaymentApplicationService implements
     }
 
     private void handleCheckoutSessionCompleted(StripeGateway.StripeWebhookEvent event) {
-        log.info("Handling checkout.session.completed");
-        // Implementation will extract subscription details from event data
-        // and create/activate the subscription
+        webhookEventHandler.handleCheckoutSessionCompleted(event.data());
     }
 
     private void handleInvoicePaid(StripeGateway.StripeWebhookEvent event) {
-        log.info("Handling invoice.paid");
-        // Implementation will mark invoice as paid and update subscription status
+        webhookEventHandler.handleInvoicePaid(event.data());
     }
 
     private void handleInvoicePaymentFailed(StripeGateway.StripeWebhookEvent event) {
-        log.info("Handling invoice.payment_failed");
-        // Implementation will mark subscription as past due and publish PaymentFailed event
+        webhookEventHandler.handleInvoicePaymentFailed(event.data());
     }
 
     private void handleSubscriptionDeleted(StripeGateway.StripeWebhookEvent event) {
-        log.info("Handling customer.subscription.deleted");
-        // Implementation will cancel the subscription
+        webhookEventHandler.handleSubscriptionDeleted(event.data());
     }
 
     private void handleSubscriptionUpdated(StripeGateway.StripeWebhookEvent event) {
-        log.info("Handling customer.subscription.updated");
-        // Implementation will update subscription status based on Stripe status
+        webhookEventHandler.handleSubscriptionUpdated(event.data());
     }
 
     // ==================== Helper Methods ====================
