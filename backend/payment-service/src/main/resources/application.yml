@@ -1,5 +1,5 @@
 # Payment Service Configuration
-# This is a placeholder for Phase 3 implementation
+# Phase 3: Core Payments Implementation
 
 spring:
   application:
@@ -23,9 +23,36 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+  
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: payment
+    validate-on-migrate: true
+  
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+    consumer:
+      group-id: payment-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        isolation.level: read_committed
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8081}
 
 # Catalyst Security Configuration
 catalyst:
@@ -53,9 +80,46 @@ catalyst:
       encryption-key: ${ENCRYPTION_KEY:32-character-encryption-key-dev}
       bcrypt-strength: 12
 
+# Payment Service Configuration
+payment:
+  # Stripe Configuration
+  stripe:
+    api-key: ${STRIPE_API_KEY:sk_test_your_stripe_secret_key}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_your_webhook_secret}
+    public-key: ${STRIPE_PUBLIC_KEY:pk_test_your_stripe_public_key}
+  
+  # Trial Configuration
+  trial:
+    duration-days: ${TRIAL_DURATION_DAYS:14}
+  
+  # Subscription Tiers Configuration
+  tiers:
+    professional:
+      monthly-price-id: ${STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID:price_professional_monthly}
+      annual-price-id: ${STRIPE_PROFESSIONAL_ANNUAL_PRICE_ID:price_professional_annual}
+      monthly-amount: 29.00
+      annual-amount: 290.00
+    clinic:
+      monthly-price-id: ${STRIPE_CLINIC_MONTHLY_PRICE_ID:price_clinic_monthly}
+      annual-price-id: ${STRIPE_CLINIC_ANNUAL_PRICE_ID:price_clinic_annual}
+      monthly-amount: 99.00
+      annual-amount: 990.00
+  
+  # Kafka Topics
+  kafka:
+    topics:
+      subscription-created: subscription.created
+      subscription-activated: subscription.activated
+      subscription-canceled: subscription.canceled
+      payment-succeeded: payment.succeeded
+      payment-failed: payment.failed
+      dlq: payment.dlq
+
 # Logging
 logging:
   level:
     com.catalyst: DEBUG
     org.springframework.security: DEBUG
+    org.springframework.kafka: INFO
+    org.flywaydb: INFO
 
