@@ -30,6 +30,9 @@
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
+        <!-- JaCoCo argLine placeholder (JaCoCo will populate this) -->
+        <argLine></argLine>
+        
         <!-- Dependency versions -->
         <jjwt.version>0.12.3</jjwt.version>
         <bucket4j.version>8.7.0</bucket4j.version>
@@ -106,7 +109,8 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
                     <configuration>
-                        <argLine>--enable-preview</argLine>
+                        <!-- Include JaCoCo agent argLine + enable-preview -->
+                        <argLine>@{argLine} --enable-preview</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
