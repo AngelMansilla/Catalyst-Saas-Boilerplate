@@ -22,6 +22,7 @@
         <module>shared-kernel</module>
         <module>payment-service</module>
         <module>user-service</module>
+        <module>notification-service</module>
     </modules>
 
     <properties>
