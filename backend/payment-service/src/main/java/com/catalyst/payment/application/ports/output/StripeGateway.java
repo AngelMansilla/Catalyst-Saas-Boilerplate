@@ -3,7 +3,6 @@ package com.catalyst.payment.application.ports.output;
 import com.catalyst.payment.domain.model.BillingCycle;
 import com.catalyst.payment.domain.model.SubscriptionTier;
 
-import java.util.UUID;
 
 /**
  * Output port for Stripe payment gateway operations.

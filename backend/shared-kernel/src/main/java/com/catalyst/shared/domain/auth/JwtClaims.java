@@ -1,7 +1,6 @@
 package com.catalyst.shared.domain.auth;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;

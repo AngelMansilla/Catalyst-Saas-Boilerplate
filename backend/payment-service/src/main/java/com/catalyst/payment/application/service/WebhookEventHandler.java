@@ -3,7 +3,6 @@ package com.catalyst.payment.application.service;
 import com.catalyst.payment.application.ports.output.*;
 import com.catalyst.payment.domain.event.*;
 import com.catalyst.payment.domain.exception.PaymentException;
-import com.catalyst.payment.domain.exception.SubscriptionNotFoundException;
 import com.catalyst.payment.domain.model.*;
 import com.catalyst.payment.domain.valueobject.*;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,7 +31,6 @@ public class WebhookEventHandler {
     private final CustomerRepository customerRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final InvoiceRepository invoiceRepository;
-    private final PaymentRepository paymentRepository;
     private final EventPublisher eventPublisher;
     private final ObjectMapper objectMapper;
 
@@ -131,7 +129,6 @@ public class WebhookEventHandler {
             
             String stripeInvoiceId = data.path("id").asText();
             String stripeSubscriptionId = data.path("subscription").asText();
-            String stripeCustomerId = data.path("customer").asText();
             long amountPaidCents = data.path("amount_paid").asLong();
             String currency = data.path("currency").asText().toUpperCase();
             String invoicePdfUrl = data.path("invoice_pdf").asText(null);
@@ -307,7 +304,6 @@ public class WebhookEventHandler {
             String stripeSubscriptionId = data.path("id").asText();
             String status = data.path("status").asText();
             long currentPeriodEnd = data.path("current_period_end").asLong();
-            boolean cancelAtPeriodEnd = data.path("cancel_at_period_end").asBoolean();
 
             log.info("Processing customer.subscription.updated: {} (status: {})", 
                 stripeSubscriptionId, status);

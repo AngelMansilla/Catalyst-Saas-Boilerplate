@@ -1,6 +1,5 @@
 package com.catalyst.payment.domain.exception;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**

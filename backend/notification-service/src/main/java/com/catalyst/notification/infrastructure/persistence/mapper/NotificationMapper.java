@@ -1,12 +1,9 @@
 package com.catalyst.notification.infrastructure.persistence.mapper;
 
 import com.catalyst.notification.domain.model.Notification;
-import com.catalyst.notification.domain.valueobject.NotificationId;
 import com.catalyst.notification.domain.valueobject.NotificationStatus;
 import com.catalyst.notification.domain.valueobject.NotificationType;
 import com.catalyst.notification.infrastructure.persistence.entity.NotificationEntity;
-
-import java.util.UUID;
 
 /**
  * Mapper between Notification domain model and NotificationEntity.

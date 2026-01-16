@@ -33,8 +33,6 @@ public class PaymentApplicationService implements
 
     private final CustomerRepository customerRepository;
     private final SubscriptionRepository subscriptionRepository;
-    private final InvoiceRepository invoiceRepository;
-    private final PaymentRepository paymentRepository;
     private final WebhookEventRepository webhookEventRepository;
     private final StripeGateway stripeGateway;
     private final EventPublisher eventPublisher;
