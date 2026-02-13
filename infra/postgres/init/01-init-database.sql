@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS audit.event_log (
     user_id VARCHAR(255),
     event_data JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ip_address INET
+    ip_address VARCHAR(45)
 );
 
 -- Create index for audit queries
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS auth.sessions (
     refresh_token TEXT NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ip_address INET,
+    ip_address VARCHAR(45),
     user_agent TEXT
 );
 

@@ -4,6 +4,10 @@
 .env.*.local
 *.env
 
+# Local config (API keys, secrets - never commit)
+**/application-local.yml
+**/application-local.yaml
+
 # IDE
 .vscode/
 .idea/
