@@ -1,7 +1,5 @@
 package com.catalyst.payment.infrastructure.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,16 +25,5 @@ public class PaymentConfig {
         return trialDurationDays;
     }
 
-    /**
-     * Configures ObjectMapper with Java 8 time module.
-     *
-     * @return configured ObjectMapper
-     */
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        return mapper;
-    }
 }
 

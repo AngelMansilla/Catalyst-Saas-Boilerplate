@@ -24,23 +24,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class StripeGatewayAdapter implements StripeGateway {
 
-    @Value("${stripe.api-key}")
+    @Value("${payment.stripe.api-key}")
     private String apiKey;
 
-    @Value("${stripe.webhook-secret}")
+    @Value("${payment.stripe.webhook-secret}")
     private String webhookSecret;
 
-    // Price IDs should be configured in application.yml
-    @Value("${stripe.prices.professional-monthly:price_professional_monthly}")
+    @Value("${payment.tiers.professional.monthly-price-id:price_professional_monthly}")
     private String professionalMonthlyPriceId;
 
-    @Value("${stripe.prices.professional-annual:price_professional_annual}")
+    @Value("${payment.tiers.professional.annual-price-id:price_professional_annual}")
     private String professionalAnnualPriceId;
 
-    @Value("${stripe.prices.clinic-monthly:price_clinic_monthly}")
+    @Value("${payment.tiers.clinic.monthly-price-id:price_clinic_monthly}")
     private String clinicMonthlyPriceId;
 
-    @Value("${stripe.prices.clinic-annual:price_clinic_annual}")
+    @Value("${payment.tiers.clinic.annual-price-id:price_clinic_annual}")
     private String clinicAnnualPriceId;
 
     @PostConstruct
