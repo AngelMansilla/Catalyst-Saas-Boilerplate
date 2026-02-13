@@ -2,6 +2,9 @@
 -- Extends the existing auth schema with additional columns and tables
 -- Note: The base auth.users and auth.sessions tables were created in init script
 
+-- Ensure uuid-ossp extension is available (should already be enabled by init script)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Add password_hash column for local authentication
 ALTER TABLE auth.users 
     ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
@@ -34,7 +37,7 @@ CREATE TABLE IF NOT EXISTS auth.password_reset_tokens (
     used BOOLEAN DEFAULT FALSE NOT NULL,
     used_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    ip_address INET
+    ip_address VARCHAR(45)
 );
 
 -- Create indexes for password reset tokens
@@ -50,7 +53,7 @@ CREATE TABLE IF NOT EXISTS auth.login_history (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     login_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    ip_address INET,
+    ip_address VARCHAR(45),
     user_agent TEXT,
     provider VARCHAR(50),
     success BOOLEAN DEFAULT TRUE NOT NULL,
@@ -79,16 +82,21 @@ COMMENT ON TABLE auth.login_history IS 'Audit log of all login attempts';
 COMMENT ON COLUMN auth.users.password_hash IS 'BCrypt hashed password for local authentication';
 COMMENT ON COLUMN auth.users.role IS 'User role: USER or ADMIN';
 
--- Log migration
-INSERT INTO audit.event_log (event_type, entity_type, entity_id, event_data)
-VALUES (
-    'MIGRATION_APPLIED', 
-    'FLYWAY', 
-    'V1__extend_auth_schema', 
-    jsonb_build_object(
-        'timestamp', CURRENT_TIMESTAMP,
-        'service', 'user-service',
-        'changes', ARRAY['password_hash column', 'role column', 'password_reset_tokens table', 'login_history table']
-    )
-);
+-- Log migration (only if audit.event_log exists)
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'audit' AND table_name = 'event_log') THEN
+        INSERT INTO audit.event_log (event_type, entity_type, entity_id, event_data)
+        VALUES (
+            'MIGRATION_APPLIED', 
+            'FLYWAY', 
+            'V1__extend_auth_schema', 
+            jsonb_build_object(
+                'timestamp', CURRENT_TIMESTAMP,
+                'service', 'user-service',
+                'changes', ARRAY['password_hash column', 'role column', 'password_reset_tokens table', 'login_history table']
+            )
+        );
+    END IF;
+END $$;
 

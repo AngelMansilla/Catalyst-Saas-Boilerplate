@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,14 @@ import java.util.UUID;
  * Kafka implementation of the EventPublisher port.
  * Publishes user domain events to Kafka topics.
  * 
+ * <p>This component is only created if KafkaTemplate is available,
+ * allowing the service to start even if Kafka is not configured.
+ * 
  * @author Catalyst Team
  * @since 0.1.0
  */
 @Component
+@ConditionalOnBean(KafkaTemplate.class)
 public class UserEventPublisher implements EventPublisher {
     
     private static final Logger log = LoggerFactory.getLogger(UserEventPublisher.class);
