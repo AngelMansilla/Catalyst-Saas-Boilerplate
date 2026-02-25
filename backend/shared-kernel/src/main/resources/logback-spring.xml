@@ -33,22 +33,25 @@
         </encoder>
     </appender>
 
+    <!-- Sentry Appender -->
+    <appender name="SENTRY" class="io.sentry.logback.SentryAppender">
+        <options>
+            <!-- Do not set DSN here, let Spring Boot handle it from application.yml -->
+        </options>
+    </appender>
+
     <!-- Profile-based logging -->
-    <springProfile name="dev">
+    <springProfile name="dev, default">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
+            <appender-ref ref="SENTRY" />
         </root>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="staging, prod">
         <root level="INFO">
             <appender-ref ref="JSON" />
-        </root>
-    </springProfile>
-
-    <springProfile name="staging">
-        <root level="INFO">
-            <appender-ref ref="JSON" />
+            <appender-ref ref="SENTRY" />
         </root>
     </springProfile>
 
