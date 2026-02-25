@@ -9,7 +9,7 @@ server:
 spring:
   application:
     name: user-service
-  
+
   # Database Configuration
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:catalyst_db}
@@ -22,7 +22,7 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-  
+
   # JPA Configuration
   jpa:
     hibernate:
@@ -34,7 +34,7 @@ spring:
         default_schema: auth
     show-sql: ${SHOW_SQL:false}
     open-in-view: false
-  
+
   # Flyway Configuration
   flyway:
     enabled: true
@@ -43,7 +43,7 @@ spring:
     schemas: auth
     baseline-on-migrate: true
     validate-on-migrate: true
-  
+
   # Redis Configuration (for sessions and rate limiting)
   data:
     redis:
@@ -56,7 +56,7 @@ spring:
           max-active: 8
           max-idle: 8
           min-idle: 2
-  
+
   # Kafka Configuration
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
@@ -68,6 +68,7 @@ spring:
       properties:
         enable.idempotence: true
         max.in.flight.requests.per.connection: 5
+        interceptor.classes: com.catalyst.shared.infrastructure.logging.CorrelationIdInterceptor
 
 # Catalyst Security Configuration (from shared-kernel)
 catalyst:
@@ -94,7 +95,7 @@ user:
   password-reset:
     token-expiration-hours: ${PASSWORD_RESET_EXPIRATION:24}
     token-length: 64
-  
+
   # Internal API Key for NextAuth sync
   internal-api-key: ${INTERNAL_API_KEY:dev-internal-api-key-change-in-production}
 
@@ -114,8 +115,6 @@ logging:
     org.springframework.security: INFO
     org.hibernate.SQL: ${HIBERNATE_SQL_LOG:WARN}
     org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_PARAMS_LOG:WARN}
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
 # OpenAPI Documentation
 springdoc:
@@ -152,4 +151,3 @@ management:
         custom:
           # Kafka is optional - only included if KafkaHealthIndicator exists
           include: db,redis
-

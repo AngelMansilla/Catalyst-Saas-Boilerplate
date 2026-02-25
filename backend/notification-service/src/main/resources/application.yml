@@ -9,7 +9,7 @@ server:
 spring:
   application:
     name: notification-service
-  
+
   # Database Configuration
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:catalyst_db}
@@ -22,7 +22,7 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-  
+
   # JPA Configuration
   jpa:
     hibernate:
@@ -34,7 +34,7 @@ spring:
         default_schema: notification
     show-sql: ${SHOW_SQL:false}
     open-in-view: false
-  
+
   # Flyway Configuration
   flyway:
     enabled: true
@@ -42,7 +42,7 @@ spring:
     schemas: notification
     baseline-on-migrate: true
     validate-on-migrate: true
-  
+
   # Redis Configuration
   data:
     redis:
@@ -50,7 +50,7 @@ spring:
       port: ${REDIS_PORT:6379}
       password: ${REDIS_PASSWORD:catalyst_redis_password}
       timeout: 2000ms
-  
+
   # Mail Configuration (Mailpit for dev, SES for prod)
   mail:
     host: ${MAIL_HOST:localhost}
@@ -68,7 +68,7 @@ spring:
           writetimeout: 5000
     from: ${MAIL_FROM:noreply@catalyst.com}
     from-name: ${MAIL_FROM_NAME:Catalyst}
-  
+
   # Thymeleaf Configuration
   thymeleaf:
     prefix: classpath:/templates/
@@ -76,7 +76,7 @@ spring:
     mode: HTML
     encoding: UTF-8
     cache: ${THYMELEAF_CACHE:false}
-  
+
   # Kafka Configuration
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
@@ -139,8 +139,6 @@ logging:
     org.springframework.kafka: INFO
     org.hibernate.SQL: ${HIBERNATE_SQL_LOG:WARN}
     org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_PARAMS_LOG:WARN}
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
 # OpenAPI Documentation
 springdoc:
@@ -174,4 +172,3 @@ management:
           include: db,redis,kafka
         custom:
           include: db,redis,kafka
-
