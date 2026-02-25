@@ -106,6 +106,7 @@ kafka:
     user-logged-in: user.logged-in
     password-reset-requested: user.password-reset-requested
     password-reset-completed: user.password-reset-completed
+    user-deleted: user.deleted
 
 # Logging
 logging:

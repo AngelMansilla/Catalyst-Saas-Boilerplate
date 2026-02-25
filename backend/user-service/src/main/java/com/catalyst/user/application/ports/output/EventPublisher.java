@@ -2,6 +2,7 @@ package com.catalyst.user.application.ports.output;
 
 import com.catalyst.user.domain.event.PasswordResetCompleted;
 import com.catalyst.user.domain.event.PasswordResetRequested;
+import com.catalyst.user.domain.event.UserDeleted;
 import com.catalyst.user.domain.event.UserLoggedIn;
 import com.catalyst.user.domain.event.UserRegistered;
 
@@ -13,7 +14,7 @@ import com.catalyst.user.domain.event.UserRegistered;
  * @since 0.1.0
  */
 public interface EventPublisher {
-    
+
     /**
      * Publishes a user registered event.
      * Consumed by notification-service and payment-service.
@@ -21,7 +22,7 @@ public interface EventPublisher {
      * @param event the event to publish
      */
     void publish(UserRegistered event);
-    
+
     /**
      * Publishes a user logged in event.
      * Consumed by audit/analytics services.
@@ -29,7 +30,7 @@ public interface EventPublisher {
      * @param event the event to publish
      */
     void publish(UserLoggedIn event);
-    
+
     /**
      * Publishes a password reset requested event.
      * Consumed by notification-service to send email.
@@ -37,7 +38,7 @@ public interface EventPublisher {
      * @param event the event to publish
      */
     void publish(PasswordResetRequested event);
-    
+
     /**
      * Publishes a password reset completed event.
      * Consumed by notification-service to send confirmation.
@@ -45,5 +46,12 @@ public interface EventPublisher {
      * @param event the event to publish
      */
     void publish(PasswordResetCompleted event);
-}
 
+    /**
+     * Publishes a user deleted event.
+     * Consumed by all services to trigger data cleanup.
+     * 
+     * @param event the event to publish
+     */
+    void publish(UserDeleted event);
+}

@@ -14,7 +14,7 @@ import java.util.Optional;
  * @since 0.1.0
  */
 public interface UserRepository {
-    
+
     /**
      * Saves a user (create or update).
      * 
@@ -22,7 +22,7 @@ public interface UserRepository {
      * @return the saved user
      */
     User save(User user);
-    
+
     /**
      * Finds a user by ID.
      * 
@@ -30,7 +30,7 @@ public interface UserRepository {
      * @return optional containing user if found
      */
     Optional<User> findById(UserId userId);
-    
+
     /**
      * Finds a user by email.
      * 
@@ -38,16 +38,16 @@ public interface UserRepository {
      * @return optional containing user if found
      */
     Optional<User> findByEmail(Email email);
-    
+
     /**
      * Finds a user by OAuth provider and account ID.
      * 
-     * @param provider the OAuth provider (e.g., "google", "github")
+     * @param provider          the OAuth provider (e.g., "google", "github")
      * @param providerAccountId the account ID from the provider
      * @return optional containing user if found
      */
     Optional<User> findByProviderAndProviderAccountId(String provider, String providerAccountId);
-    
+
     /**
      * Checks if an email is already registered.
      * 
@@ -55,7 +55,7 @@ public interface UserRepository {
      * @return true if email exists
      */
     boolean existsByEmail(Email email);
-    
+
     /**
      * Lists all users with pagination.
      * 
@@ -64,19 +64,18 @@ public interface UserRepository {
      * @return list of users
      */
     List<User> findAll(int page, int size);
-    
+
     /**
      * Counts total number of users.
      * 
      * @return total user count
      */
     long count();
-    
-    /**
-     * Deletes a user.
-     * 
-     * @param user the user to delete
-     */
-    void delete(User user);
-}
 
+    /**
+     * Deletes a user by ID.
+     * 
+     * @param userId the ID of the user to delete
+     */
+    void delete(UserId userId);
+}
