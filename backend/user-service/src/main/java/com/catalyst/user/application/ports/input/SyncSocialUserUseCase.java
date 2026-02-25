@@ -4,14 +4,14 @@ import com.catalyst.user.application.dto.SyncUserRequest;
 import com.catalyst.user.application.dto.UserResponse;
 
 /**
- * Use case for synchronizing users from OAuth providers.
- * Called by NextAuth after successful OAuth authentication.
+ * Use case for synchronizing users from external identity providers.
+ * Called after successful authentication on the client-side.
  * 
  * @author Catalyst Team
  * @since 0.1.0
  */
 public interface SyncSocialUserUseCase {
-    
+
     /**
      * Syncs a user from an OAuth provider.
      * Creates a new user if they don't exist, or updates existing user.
@@ -21,4 +21,3 @@ public interface SyncSocialUserUseCase {
      */
     UserResponse sync(SyncUserRequest request);
 }
-

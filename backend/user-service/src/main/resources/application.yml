@@ -96,7 +96,7 @@ user:
     token-expiration-hours: ${PASSWORD_RESET_EXPIRATION:24}
     token-length: 64
 
-  # Internal API Key for NextAuth sync
+  # Internal API Key for secure frontend/microservice synchronization
   internal-api-key: ${INTERNAL_API_KEY:dev-internal-api-key-change-in-production}
 
 # Kafka Topics

@@ -29,7 +29,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/v1/users")
-@Tag(name = "Users", description = "User management endpoints")
+@Tag(name = "Users", description = "User management and synchronization endpoints")
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping("/sync")
-    @Operation(summary = "Sync OAuth user", description = "Syncs user from OAuth provider (called by NextAuth)")
+    @Operation(summary = "Sync platform user", description = "Synchronizes user profile from an external identity provider (Google, GitHub, etc.)")
     public ResponseEntity<UserResponse> syncUser(
             @Valid @RequestBody SyncUserRequest request,
             @RequestHeader("X-API-Key") String apiKey) {
