@@ -79,7 +79,7 @@ spring:
 
   # Kafka Configuration
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
     consumer:
       group-id: notification-service-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -137,6 +137,7 @@ logging:
     root: INFO
     com.catalyst.notification: DEBUG
     org.springframework.kafka: INFO
+    org.apache.kafka: INFO
     org.hibernate.SQL: ${HIBERNATE_SQL_LOG:WARN}
     org.hibernate.type.descriptor.sql.BasicBinder: ${HIBERNATE_PARAMS_LOG:WARN}
 

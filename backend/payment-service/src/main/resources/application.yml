@@ -35,7 +35,7 @@ spring:
 
   # Kafka Configuration
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -79,7 +79,7 @@ catalyst:
         burst: 20
 
     crypto:
-      encryption-key: ${ENCRYPTION_KEY:32-character-encryption-key-dev}
+      encryption-key: ${ENCRYPTION_KEY:32-char-dev-encryption-key-fixed}
       bcrypt-strength: 12
 
 # Payment Service Configuration
@@ -110,9 +110,9 @@ payment:
   # Kafka Topics
   kafka:
     topics:
-      subscription-created: subscription.created
-      subscription-activated: subscription.activated
-      subscription-canceled: subscription.canceled
+      subscription-created: payment.subscription.created
+      subscription-activated: payment.subscription.activated
+      subscription-canceled: payment.subscription.canceled
       payment-succeeded: payment.succeeded
       payment-failed: payment.failed
       dlq: payment.dlq
@@ -136,10 +136,11 @@ management:
       show-details: when_authorized
       probes:
         enabled: true
+      validate-group-membership: false
       group:
         liveness:
           include: ping
         readiness:
-          include: db,redis,kafka
+          include: db,redis
         custom:
-          include: db,redis,kafka
+          include: db,redis

@@ -62,5 +62,3 @@ echo "S3 buckets created successfully:"
 awslocal s3 ls
 
 echo "LocalStack S3 initialization complete!"
-
-

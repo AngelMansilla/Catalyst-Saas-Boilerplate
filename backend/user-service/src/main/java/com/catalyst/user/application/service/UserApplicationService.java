@@ -94,8 +94,8 @@ public class UserApplicationService implements
         // Save user
         User savedUser = userRepository.save(user);
 
-        // Publish domain events
-        savedUser.getDomainEvents().forEach(event -> {
+        // Publish domain events from the original entity
+        user.getDomainEvents().forEach(event -> {
             if (event instanceof com.catalyst.user.domain.event.UserRegistered userRegistered) {
                 eventPublisher.publish(userRegistered);
             }
@@ -145,8 +145,8 @@ public class UserApplicationService implements
         user.recordLogin(ipAddress);
         User updatedUser = userRepository.save(user);
 
-        // Publish login event
-        updatedUser.getDomainEvents().forEach(event -> {
+        // Publish login event from the original entity
+        user.getDomainEvents().forEach(event -> {
             if (event instanceof com.catalyst.user.domain.event.UserLoggedIn userLoggedIn) {
                 eventPublisher.publish(userLoggedIn);
             }
@@ -175,6 +175,7 @@ public class UserApplicationService implements
         if (existingByProvider.isPresent()) {
             // Update existing user
             User user = existingByProvider.get();
+            log.info("Social user already exists (by provider ID), syncing: {}", user.getId());
             user.syncFromOAuth(request.name(), request.imageUrl());
             User savedUser = userRepository.save(user);
             log.info("Existing OAuth user synced: {}", savedUser.getId());
@@ -185,13 +186,12 @@ public class UserApplicationService implements
         Optional<User> existingByEmail = userRepository.findByEmail(email);
         if (existingByEmail.isPresent()) {
             User user = existingByEmail.get();
-            // If user registered with different provider, don't allow linking
-            // (In a more sophisticated system, you might allow account linking)
             log.warn("Email {} already registered with provider {}",
                     request.email(), user.getProvider());
             throw new EmailAlreadyExistsException(email);
         }
 
+        log.info("Creating NEW OAuth user for email: {}", request.email());
         // Create new OAuth user
         User newUser = User.registerWithOAuth(
                 email,
@@ -202,9 +202,11 @@ public class UserApplicationService implements
 
         User savedUser = userRepository.save(newUser);
 
-        // Publish registration event
-        savedUser.getDomainEvents().forEach(event -> {
+        // Publish registration event from the new user entity
+        log.info("Found {} domain events to publish", newUser.getDomainEvents().size());
+        newUser.getDomainEvents().forEach(event -> {
             if (event instanceof com.catalyst.user.domain.event.UserRegistered userRegistered) {
+                log.info("Publishing UserRegistered event for sync: {}", userRegistered.email().getValue());
                 eventPublisher.publish(userRegistered);
             }
         });
