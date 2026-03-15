@@ -2,7 +2,6 @@ package com.catalyst.payment.integration;
 
 import com.catalyst.payment.domain.model.BillingCycle;
 import com.catalyst.payment.domain.model.SubscriptionTier;
-import com.catalyst.payment.infrastructure.stripe.StripeGatewayAdapter;
 import com.catalyst.shared.BaseIntegrationTest;
 import com.stripe.Stripe;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +14,22 @@ import org.testcontainers.utility.DockerImageName;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.catalyst.payment.PaymentServiceApplication;
+import com.catalyst.payment.infrastructure.config.PaymentProperties;
+import com.catalyst.payment.infrastructure.stripe.StripeGatewayAdapter;
+import org.springframework.boot.test.context.SpringBootTest;
+
 @DisplayName("Stripe Integration Test")
+@SpringBootTest(classes = {
+        PaymentServiceApplication.class,
+        StripeGatewayAdapter.class,
+        PaymentProperties.class
+})
 class StripeIntegrationIT extends BaseIntegrationTest {
+
+    static {
+        System.setProperty("spring.classformat.ignore", "true");
+    }
 
     @Container
     static final GenericContainer<?> stripeMock = new GenericContainer<>(
