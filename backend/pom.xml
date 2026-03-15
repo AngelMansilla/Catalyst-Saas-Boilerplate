@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.3</version>
+        <version>3.4.1</version>
         <relativePath />
     </parent>
 
@@ -37,10 +37,11 @@
         <!-- Dependency versions -->
         <jjwt.version>0.13.0</jjwt.version>
         <bucket4j.version>8.7.0</bucket4j.version>
-        <testcontainers.version>1.19.8</testcontainers.version>
+        <testcontainers.version>1.20.4</testcontainers.version>
         <archunit.version>1.2.1</archunit.version>
         <logstash-logback.version>7.4</logstash-logback.version>
         <sentry.version>8.33.0</sentry.version>
+        <jna.version>5.15.0</jna.version>
     </properties>
 
     <dependencyManagement>
@@ -82,6 +83,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>com.github.docker-java</groupId>
+                <artifactId>docker-java-transport-httpclient5</artifactId>
+                <version>3.4.0</version>
+            </dependency>
 
             <!-- ArchUnit -->
             <dependency>
@@ -104,6 +110,32 @@
                 <version>${sentry.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Force JNA version for JDK 25 compatibility -->
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+
+            <!-- Mockito 5.x for Java 25 -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>5.14.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>5.14.2</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -132,8 +164,12 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
                     <configuration>
-                        <!-- Include JaCoCo agent argLine + enable-preview -->
-                        <argLine>@{argLine} --enable-preview</argLine>
+                        <!-- Include JaCoCo agent argLine + enable-preview and JNA flags for Java 25 -->
+                        <!-- Add Mockito agent to support inline mocking in Java 25 -->
+                        <argLine>
+                            @{argLine} --enable-preview --enable-native-access=ALL-UNNAMED
+                            -javaagent:${settings.localRepository}/org/mockito/mockito-core/5.14.2/mockito-core-5.14.2.jar
+                        </argLine>
                     </configuration>
                 </plugin>
                 <plugin>
