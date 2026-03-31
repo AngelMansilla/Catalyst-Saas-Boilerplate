@@ -11,6 +11,10 @@
 # IDE
 .vscode/
 .idea/
+.classpath
+.project
+.factorypath
+.settings/
 *.swp
 *.swo
 *~
