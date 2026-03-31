@@ -68,3 +68,5 @@ test-results/
 *.key
 *.cert
 
+.atl/
+tasks/
