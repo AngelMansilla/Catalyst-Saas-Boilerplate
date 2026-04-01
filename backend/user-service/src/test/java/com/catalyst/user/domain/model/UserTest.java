@@ -61,10 +61,11 @@ class UserTest {
 
             User user = User.registerWithCredentials(email, VALID_NAME, password);
 
-            assertThat(user.getDomainEvents()).hasSize(1);
-            assertThat(user.getDomainEvents().get(0)).isInstanceOf(UserRegistered.class);
+            var events = user.getDomainEvents();
+            assertThat(events).hasSize(1);
+            assertThat(events.get(0)).isInstanceOf(UserRegistered.class);
 
-            UserRegistered event = (UserRegistered) user.getDomainEvents().get(0);
+            UserRegistered event = (UserRegistered) events.get(0);
             assertThat(event.userId()).isEqualTo(user.getId());
             assertThat(event.email()).isEqualTo(email);
             assertThat(event.provider()).isEqualTo(AuthProvider.LOCAL);
@@ -131,10 +132,11 @@ class UserTest {
             user.recordLogin(ipAddress);
 
             assertThat(user.getLastLoginAt()).isNotNull();
-            assertThat(user.getDomainEvents()).hasSize(1);
-            assertThat(user.getDomainEvents().get(0)).isInstanceOf(UserLoggedIn.class);
+            var events = user.getDomainEvents();
+            assertThat(events).hasSize(1);
+            assertThat(events.get(0)).isInstanceOf(UserLoggedIn.class);
 
-            UserLoggedIn event = (UserLoggedIn) user.getDomainEvents().get(0);
+            UserLoggedIn event = (UserLoggedIn) events.get(0);
             assertThat(event.ipAddress()).isEqualTo(ipAddress);
         }
 
@@ -186,8 +188,9 @@ class UserTest {
             user.changePassword(newPassword);
 
             assertThat(user.getPasswordHash()).isEqualTo(newPassword);
-            assertThat(user.getDomainEvents()).hasSize(1);
-            assertThat(user.getDomainEvents().get(0)).isInstanceOf(PasswordResetCompleted.class);
+            var events = user.getDomainEvents();
+            assertThat(events).hasSize(1);
+            assertThat(events.get(0)).isInstanceOf(PasswordResetCompleted.class);
         }
 
         @Test
@@ -210,10 +213,11 @@ class UserTest {
 
             user.requestPasswordReset(token, expiresAt);
 
-            assertThat(user.getDomainEvents()).hasSize(1);
-            assertThat(user.getDomainEvents().get(0)).isInstanceOf(PasswordResetRequested.class);
+            var events = user.getDomainEvents();
+            assertThat(events).hasSize(1);
+            assertThat(events.get(0)).isInstanceOf(PasswordResetRequested.class);
 
-            PasswordResetRequested event = (PasswordResetRequested) user.getDomainEvents().get(0);
+            PasswordResetRequested event = (PasswordResetRequested) events.get(0);
             assertThat(event.token()).isEqualTo(token);
             assertThat(event.expiresAt()).isEqualTo(expiresAt);
         }

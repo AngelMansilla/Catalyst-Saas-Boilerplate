@@ -56,7 +56,7 @@ class HexagonalArchitectureTest {
         @DisplayName("layeredArchitecture_whenEnforced_thenInfrastructureMayNotBeAccessedByApplicationOrDomain")
         void layeredArchitecture_whenEnforced_thenInfrastructureMayNotBeAccessedByApplicationOrDomain() {
             ArchRule rule = layeredArchitecture()
-                    .consideringAllDependencies()
+                    .consideringOnlyDependenciesInAnyPackage(BASE_PACKAGE + "..")
                     .layer("Domain").definedBy(DOMAIN_LAYER)
                     .layer("Application").definedBy(APPLICATION_LAYER)
                     .layer("Infrastructure").definedBy(INFRASTRUCTURE_LAYER)

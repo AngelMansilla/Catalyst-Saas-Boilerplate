@@ -2,6 +2,18 @@
 
 This file defines the coding standards enforced on every commit via automated review.
 
+## Engram Memory — Project Name (MANDATORY)
+
+**The canonical project name is `catalys` — all lowercase, no uppercase, no hyphens, no dots, no spaces.**
+
+Always pass `project: "catalys"` to every Engram tool call:
+- `mem_save`, `mem_update`, `mem_search`, `mem_context`, `mem_session_start`, `mem_session_summary`
+
+**Forbidden variants** (never use any of these):
+`Catalys`, `CATALYS`, `Catalyst`, `catalyst-saas-boilerplate`, `Catalyst-Saas-Boilerplate`, `Catalys-Saas-Boilerplate`
+
+**Rule**: Engram project names must be lowercase ASCII only — no uppercase letters, no hyphens (`-`), no dots (`.`), no spaces. One word, all lowercase.
+
 ## Architecture
 
 - **Hexagonal Architecture is non-negotiable**: domain layer must have zero Spring annotations or framework imports.
